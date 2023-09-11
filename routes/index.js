@@ -3,7 +3,8 @@ const router = express.Router();
 const { verify } = require("../methods/middleware");
 const user = require("../methods/user").functions;
 const general = require("../methods/general");
-const company = require("../methods/company").functions;
+const budget = require("../methods/budget").functions;
+const transaction = require("../methods/transaction").functions;
 
 router.post("/cleardb", general.cleardb);
 
@@ -56,9 +57,14 @@ router.post("/resetPassword", user.resetPassword);
 
 router.post("/getUserId", user.getUserId);
 
-// ################################# company #################################
-router.post("/company/add", verify, company.addNewCompany);
+// ################################# BUDGET #################################
+router.post("/budget/addNewBudget", verify, budget.addNewBudget);
 
-router.post("/company/update", verify, company.updateCompanyInfo);
+router.post("/budget/updateBudget", verify, budget.updateBudget);
+
+// ############################### TRANSACTION ##############################
+router.post("/transaction/addNewTransaction", verify, transaction.addNewTransaction);
+
+router.post("/transaction/updateTransaction", verify, transaction.updateTransaction);
 
 module.exports = router;
