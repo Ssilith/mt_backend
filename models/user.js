@@ -26,6 +26,10 @@ var userSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        permissions: {
+            type: Boolean,
+            trim: true,
+        },
         transactionId: [{ type: mongoose.Schema.Types.ObjectId }],
         budgetId: [{ type: mongoose.Schema.Types.ObjectId }],
         notificationId: [{ type: mongoose.Schema.Types.ObjectId }],

@@ -131,7 +131,8 @@ var functions = {
             let newUser = new User(req.body.newUser);
             newUser = await newUser.save();
 
-            private.sendNewAccountEmail(req, res, newUser);
+            // private.sendNewAccountEmail(req, res, newUser);
+            return res.status(200).send({ success: true });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e });
