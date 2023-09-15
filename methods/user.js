@@ -87,7 +87,7 @@ var functions = {
             const token = await Token.findOne({
                 token: req.headers.refreshtoken,
             });
-            if (!token) throw new Error("Refresh token not found"); //this will make the code jump to the catch clause
+            if (!token) throw new Error("Refresh token not found");
 
             const decodedToken = jwt.verify(
                 req.headers.refreshtoken,
@@ -131,7 +131,6 @@ var functions = {
             let newUser = new User(req.body.newUser);
             newUser = await newUser.save();
 
-            // private.sendNewAccountEmail(req, res, newUser);
             return res.status(200).send({ success: true });
         } catch (e) {
             console.log(e);
@@ -169,6 +168,7 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
+
     sendResetPwdEmail: async function (req, res) {
         try {
             let user = await User.findOne({ email: req.body.email });
@@ -182,22 +182,21 @@ var functions = {
             return res.status(500).send({ success: false, msg: err });
         }
     },
+
     resetPasswordRender: function (req, res) {
         var protocol = req.secure ? "https" : "http";
         var fullUrl = protocol + "://" + req.get("host") + req.originalUrl;
         res.render("reset_password_page", {
-            title: "RenX App",
-            body: "Choose a new password for",
-            hint: "Enter New Password",
-            hintConfirm: "Confirm New Password",
-            buttonText: "Reset Password Now",
-            pwdEmptyErrorMsg: "Password must be at least 11 characters long",
-            pwdMismatchErrorMsg: "Passwords do not match",
+            body: "Wybierz nowe hasło dla",
+            hint: "Wpisz nowe hasło",
+            hintConfirm: "Potwierdź nowe hasło",
+            buttonText: "Zresetuj hasło",
+            pwdMismatchErrorMsg: "Hasła nie są takie same",
+            pwdEmptyMsg: "Należy uzupełnić pola",
             email: new URL(fullUrl).searchParams.get("email"),
             url: protocol + "://" + req.get("host") + "/resetPassword",
             imageLink:
-                "https://www.renx-italia.com/wp-content/uploads/2022/05/Obraz1.webp",
-            //imageLink: protocol + "://" + req.get("host") + "/images/renx_logo.png",
+                "https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D",
         });
     },
     resetPassword: async function (req, res) {
@@ -210,20 +209,19 @@ var functions = {
 
             return res.status(200).send({
                 success: true,
-                title: "Password changed successfully",
-                msg: "You can now login using your new password.",
+                title: "Zmiana hasła zakończona pomyślnie",
+                msg: "Możesz się zalogować nowym hasłem",
             });
         } catch (e) {
             return res.status(500).send({
                 success: false,
-                msg: "Error while saving your new password. Please try again",
+                msg: "Wystąpił błąd podczas zmiany hasła. Spróbuj jeszcze raz",
             });
         }
     },
     getAllUsernames: async function (req, res) {
         try {
             let usernameAll = await User.distinct("username");
-            //console.log(usernameAll);
             return res
                 .status(200)
                 .send({ success: true, usernameAll: usernameAll });
@@ -270,7 +268,7 @@ var private = {
             const email = new Email({
                 views: { root: "./views", options: { extension: "ejs" } },
                 message: {
-                    from: "noreply.renx@gmail.com",
+                    from: "moneytracker.biuro@gmail.com",
                 },
                 preview: false,
                 send: true,
@@ -282,14 +280,14 @@ var private = {
                     to: user.email,
                 },
                 locals: {
-                    title: "Trouble singing in?",
+                    title: "Problem z logowaniem?",
                     name: user.name,
-                    body: "Somebody requested a new password for RenX App account attached to this e-mail.",
-                    buttonText: "Press to reset your password",
+                    body: "Ktoś poprosił o nowe hasło do konta aplikacji Money Tracker przypisanego do tego adresu e-mail.",
+                    buttonText: "Naciśnij, aby zresetować hasło",
                     footText:
-                        "If you did not request a password reset, please ignore this email.",
+                        "Jeśli nie prosiłeś(-aś) o zresetowanie hasła, zignoruj tę wiadomość e-mail.",
                     footText2:
-                        "This email was sent from an unmonitored mailbox.",
+                        "Ten e-mail został wysłany z nienadzorowanej skrzynki pocztowej.",
                     resetLink:
                         protocol +
                         "://" +
@@ -297,56 +295,20 @@ var private = {
                         "/resetPasswordRender?email=" +
                         user.email,
                     imageLink:
-                        "https://www.renx-italia.com/wp-content/uploads/2022/05/Obraz1.webp",
-                    // protocol + "://" + req.get("host") + "/images/renx_logo.png",
+                        "https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D",
                 },
             });
-            res.status(200).send({ success: true, key: "resetPwdEmailSent" });
+            res.status(200).send({
+                success: true,
+                key: "resetPwdEmailSent",
+                user: user,
+            });
         } catch (e) {
             console.log(e);
             res.status(500).send({ success: false });
         }
     },
-    sendNewAccountEmail: async function (req, res, user) {
-        try {
-            var transporter = nodemailer.createTransport(mailConfig);
-            const email = new Email({
-                views: { root: "./views", options: { extension: "ejs" } },
-                message: {
-                    from: "noreply.renx@gmail.com",
-                },
-                preview: false,
-                send: true,
-                transport: transporter,
-            });
-            await email.send({
-                template: "new_account_email",
-                message: {
-                    to: user.email + ";" + req.body.user.email,
-                },
-                locals: {
-                    title: "A user account has been created",
-                    name: user.email,
-                    password: req.body.newUser.password,
-                    body: "You can now sing in to the ZF App",
-                    body2: "Once you or other users have signed in with their temporary password, they can create their own by following the instructions on the sign in page.",
-                    buttonText: "Open ZF app page",
-                    footText:
-                        "This email was sent from an unmonitored mailbox.",
-                    footText2:
-                        "You are receiving this email because you created a new account or somebody created account with your email address.",
-                    pageLink: "https://renx-database.web.app/",
-                    imageLink:
-                        "https://www.renx-italia.com/wp-content/uploads/2022/05/Obraz1.webp",
-                    // protocol + "://" + req.get("host") + "/images/renx_logo.png",
-                },
-            });
-            res.status(200).send({ success: true, key: "newAccountMailSent" });
-        } catch (e) {
-            console.log(e);
-            res.status(500).send({ success: false });
-        }
-    },
+
     logoutAll: async function (userId) {
         await Token.deleteMany({
             userId: userId,

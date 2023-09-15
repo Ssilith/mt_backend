@@ -1,97 +1,119 @@
 <!DOCTYPE html>
-	
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-	
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
 	<style>
-		body{
-			overflow-y: hidden;
+		body {
 			font-family: helvetica;
+			width: 100%;
+			padding: 0;
+			margin: 0;
+			color: #000;
 		}
-		hr {
-			border: none;
-			background-color: #ccc;
-			color: #ccc;
-			height: 1px;
+
+		h2 {
+			color: #000;
 		}
-        .description{
-        	color:rgba(120, 120, 120, 1);
-            margin: 4px 0px;
-        }
-        .mailinfo{
-        	color:rgba(80, 80, 80, 1);
-            font-size: 14px;
-            margin: 0px 0px;
-        }
-		.container{
-			background-color:rgba(40, 184, 71, 0.2);
-			padding: 250px 20px;
+
+		.logo-img {
+			width: 100%;
+			height: auto;
 		}
-		.card{
+
+		.description {
+			color: rgba(120, 120, 120, 1);
+
+		}
+
+		.mailinfo {
+			color: rgba(80, 80, 80, 1);
+			font-size: 12px;
+
+		}
+
+		.container {
+			background-color: rgb(21, 43, 90);
+			width: 100%;
+			padding: 2.5rem 2rem;
+
+		}
+
+		.card {
 			background-color: white;
-			padding: 20px;
-			border: 0px;
-			min-height: 40%;
+			width: 100%;
 			border-radius: 10px;
-			margin: 0 auto;
-			text-align:center
-		}
-		.btn{
-			text-decoration: none;
-			padding: 15px 30px;
+			margin: 20px 10px;
 			text-align: center;
-			border-radius: 6px;
-			color: rgb(31, 182, 68);
-			font-size: 18px;
-			margin: 4px 2px;
+			margin: 0 auto;
+			padding: 1rem 1.5rem;
+
 		}
-		
-		/* Small devices (vertical phones, 120px and up) */
-		@media (min-width: 120px) {  
-			.card{width: 90%}
-			.logo{width: 25%}
-			.description{font-size: 18px}
-		} 
-		/* Medium devices (tablets, 768px and up) */
-		@media (min-width: 768px) {  
-			.card{width: 80%}
-			.logo{width: 15%}
-			.description{font-size: 20px}
+
+		.btn {
+			text-decoration: none;
+			color: rgb(210, 172, 85);
+			font-size: 1.5rem;
 		}
-		/* Large devices (desktops, 992px and up) */
-		@media (min-width: 992px) { 
-			.card{width: 40%}
-			.logo{width: 15%}
-			.description{font-size: 21px}
-		}  
+
+		b {
+			color: rgb(210, 172, 85);
+		}
 	</style>
 </head>
-	
+
 <body>
-		<div class="container">
-			<div class="card">
-					<img class="logo" src="https://www.renx-italia.com/wp-content/uploads/2022/05/Obraz1.webp">
-					<br><br>
-					<p>
-						<h2><%=title%></h2>
-					</p>
-					<p class="description">
-						<%=body%><br>
-					</p>
-					<a class="btn" href="<%=resetLink%>">
-						<b><%=buttonText%></b>
-					</a>
-                    <p></p>
-					<p class="mailinfo">
-						<%=footText%><br>
-					</p>
-					<p class="mailinfo">
-						<%=footText2%><br>
-					</p>
-			</div>
-		</div>				  
+	<table class="container" width="600" role="presentation">
+		<tbody>
+			<tr>
+				<td valign="top" width="600px">
+
+					<table class="card">
+						<tbody>
+							<tr>
+								<td>
+									<img class="logo"
+										src="https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D"
+										alt="Logo" title="Logo" width="95" height="95" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h2>
+										<%=title%>
+									</h2>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p class="description">
+										<%=body%>
+									</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a class="btn" href="<%=resetLink%>"><b>
+											<%=buttonText%>
+										</b></a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p class="mailinfo">
+										<%=footText%><br />
+											<%=footText2%>
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </body>
-			  
+
 </html>

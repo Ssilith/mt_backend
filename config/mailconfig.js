@@ -1,19 +1,20 @@
-if (process.env.NODE_ENV === "development") {
-  module.exports = {
-    host: "smtp.mailtrap.io",
-    port: "2525",
-    auth: {
-      user: "e843dd81a0ba7c",
-      pass: "6c297f725e0d38",
-    },
-  };
-} else {
-  // module.exports = {
-  //   host: "smtp.gmail.com",
-  //   port: "587",
-  //   auth: {
-  //     user: "noreply.renx@gmail.com",
-  //     pass: process.env.MAILER_PSW,
-  //   },
-  // };
-}
+// if (process.env.NODE_ENV === "development") {
+// module.exports = {
+//   host: "sandbox.smtp.mailtrap.io",
+//   port: "587",
+//   auth: {
+//     user: "a03467227a2d95",
+//     pass: "60d2eb2f64e68c",
+//   },
+// };
+// } else {
+module.exports = {
+  host: "smtp.gmail.com",
+  // port: "587",
+  port: "465",
+  auth: {
+    user: "moneytracker.biuro@gmail.com",
+    pass: process.env.MAILER_PSW,
+  },
+};
+// }
