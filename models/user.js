@@ -33,6 +33,7 @@ var userSchema = new mongoose.Schema(
         transactionId: [{ type: mongoose.Schema.Types.ObjectId }],
         budgetId: [{ type: mongoose.Schema.Types.ObjectId }],
         notificationId: [{ type: mongoose.Schema.Types.ObjectId }],
+        categoryId: [{ type: mongoose.Schema.Types.ObjectId }],
         token: {
             type: String,
         },

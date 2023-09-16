@@ -5,6 +5,7 @@ const user = require("../methods/user").functions;
 const general = require("../methods/general");
 const budget = require("../methods/budget").functions;
 const transaction = require("../methods/transaction").functions;
+const category = require("../methods/category").functions;
 
 router.post("/cleardb", general.cleardb);
 
@@ -67,4 +68,14 @@ router.post("/transaction/addNewTransaction", verify, transaction.addNewTransact
 
 router.post("/transaction/updateTransaction", verify, transaction.updateTransaction);
 
+//##########################		CATEGORY		##########################
+router.post("/category/addCategory", verify, category.addCategory);
+
+router.post("/category/updateCategory", verify, category.updateCategory);
+
+router.post("/category/getCategories", verify, category.getCategories);
+
+router.post("/category/getCategoriesNames", verify, category.getCategoriesNames);
+
+router.post("/category/getCategoryIdByName", verify, category.getCategoryIdByName);
 module.exports = router;

@@ -116,7 +116,6 @@ var functions = {
     },
     addNew: async function (req, res) {
         try {
-            console.log(req.body.newUser.email);
             let user = await User.findOne({
                 $or: [{ email: req.body.newUser.email }],
             });

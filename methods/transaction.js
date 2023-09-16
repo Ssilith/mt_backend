@@ -1,12 +1,11 @@
 const Transaction = require("../models/transaction");
-const User = require("../models/user");
+const mongoose = require("mongoose");
 
 var functions = {
     addNewTransaction: async function (req, res) {
         try {
             let newTransaction = new Transaction(req.body.transaction);
             newTransaction = await newTransaction.save();
-            console.log(newTransaction);
             return res.status(200).send({ success: true, transaction: newTransaction });
         } catch (e) {
             console.log(e);

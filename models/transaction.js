@@ -11,10 +11,7 @@ var transactionSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
-        category: {
-            type: String,
-            trim: true,
-        },
+        category: { type: mongoose.Schema.Types.ObjectId },
         date: {
             type: Date,
         },
