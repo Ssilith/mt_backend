@@ -68,6 +68,10 @@ router.post("/transaction/addNewTransaction", verify, transaction.addNewTransact
 
 router.post("/transaction/updateTransaction", verify, transaction.updateTransaction);
 
+router.post("/transaction/getLastTenTransactions", verify, transaction.getAllTransactionsForUser);
+
+router.get("/transaction/:userId/getLastTenTransactionsForUser", verify, transaction.getLastTenTransactionsForUser);
+
 //##########################		CATEGORY		##########################
 router.post("/category/addCategory", verify, category.addCategory);
 
