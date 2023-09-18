@@ -30,6 +30,10 @@ var userSchema = new mongoose.Schema(
             type: Boolean,
             trim: true,
         },
+        account: {
+            type: Number,
+            trim: true,
+        },
         transactionId: [{ type: mongoose.Schema.Types.ObjectId }],
         budgetId: [{ type: mongoose.Schema.Types.ObjectId }],
         notificationId: [{ type: mongoose.Schema.Types.ObjectId }],

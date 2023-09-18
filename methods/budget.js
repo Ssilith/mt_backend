@@ -2,18 +2,6 @@ const Budget = require("../models/budget");
 const User = require("../models/user");
 
 var functions = {
-    // addNewBudget: async function (req, res) {
-    //     try {
-    //         let newBudget = new Budget(req.body.budget);
-    //         newBudget = await newBudget.save();
-    //         console.log(newBudget);
-    //         return res.status(200).send({ success: true, budget: newBudget });
-    //     } catch (e) {
-    //         console.log(e);
-    //         return res.status(500).send({ success: false, msg: e });
-    //     }
-    // },
-
     addNewBudget: async function (req, res) {
         try {
             let { startDate, endDate } = req.body.budget;
