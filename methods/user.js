@@ -130,7 +130,8 @@ var functions = {
             let newUser = new User(req.body.newUser);
             newUser = await newUser.save();
 
-            return res.status(200).send({ success: true });
+            private.sendNewAccountEmail(req, res, newUser);
+            // return res.status(200).send({ success: true });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e });
@@ -208,13 +209,13 @@ var functions = {
 
             return res.status(200).send({
                 success: true,
-                title: "Zmiana hasła zakończona pomyślnie",
-                msg: "Możesz się zalogować nowym hasłem",
+                title: "Zmiana hasła zakończona pomyślnie.",
+                msg: "Możesz się zalogować nowym hasłem.",
             });
         } catch (e) {
             return res.status(500).send({
                 success: false,
-                msg: "Wystąpił błąd podczas zmiany hasła. Spróbuj jeszcze raz",
+                msg: "Wystąpił błąd podczas zmiany hasła. Spróbuj jeszcze raz.",
             });
         }
     },
@@ -300,6 +301,48 @@ var private = {
             res.status(200).send({
                 success: true,
                 key: "resetPwdEmailSent",
+                user: user,
+            });
+        } catch (e) {
+            console.log(e);
+            res.status(500).send({ success: false });
+        }
+    },
+
+    sendNewAccountEmail: async function (req, res, user) {
+        try {
+            var transporter = nodemailer.createTransport(mailConfig);
+            const email = new Email({
+                views: { root: "./views", options: { extension: "ejs" } },
+                message: {
+                    from: "moneytracker.biuro@gmail.com",
+                },
+                preview: false,
+                send: true,
+                transport: transporter,
+            });
+            await email.send({
+                template: "new_account_email",
+                message: {
+                    to: user.email,
+                },
+                locals: {
+                    title: "Konto użytkownika zostało utworzone",
+                    name: user.email,
+                    body: "Możesz teraz zalogować się do aplikacji Money Tracker.",
+                    buttonText: "Otwórz stronę aplikacji",
+                    footText:
+                        "Ten e-mail został wysłany z nienadzorowanej skrzynki pocztowej.",
+                    footText2:
+                        "Otrzymujesz tę wiadomość e-mail, ponieważ Ty lub ktoś utworzył nowe konto przy użyciu Twojego adresu e-mail.",
+                    pageLink: "https://play.google.com/store/games?device=windows&pli=1",
+                    imageLink:
+                        "https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D",
+                },
+            });
+            res.status(200).send({
+                success: true,
+                key: "newAccountMailSent",
                 user: user,
             });
         } catch (e) {

@@ -18,14 +18,14 @@
 			color: #000;
 		}
 
-		.logo-img {
-			width: 100%;
-			height: auto;
-		}
 
 		.description {
 			color: rgba(120, 120, 120, 1);
 
+		}
+
+		.accountinfo {
+			color: rgba(120, 120, 120, 1);
 		}
 
 		.mailinfo {
@@ -69,46 +69,49 @@
 		<tbody>
 			<tr>
 				<td valign="top" width="600px">
-
 					<table class="card">
-						<tbody>
-							<tr>
-								<td>
-									<img class="logo"
-										src="https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D"
-										alt="Logo" title="Logo" width="95" height="95" />
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<h2>
-										<%=title%>
-									</h2>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<p class="description">
-										<%=body%>
-									</p>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a class="btn" href="<%=resetLink%>"><b>
-											<%=buttonText%>
-										</b></a>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<p class="mailinfo">
-										<%=footText%><br />
-											<%=footText2%>
-									</p>
-								</td>
-							</tr>
-						</tbody>
+						<tr>
+							<td>
+								<img class="logo" src="<%=imageLink%>" alt="Logo" title="Logo" width="154" height="159">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h2>
+									<%=title%>
+								</h2>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p class="description">
+									Nazwa użytkownika: <b>
+										<%=name%>
+									</b><br /></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p class="accountinfo">
+									<%=body%><br>
+								</p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a class="btn" href="<%=pageLink%>"><b>
+										<%=buttonText%>
+									</b></a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p class="mailinfo">
+									<%=footText%><br />
+										<%=footText2%>
+								</p>
+							</td>
+						</tr>
 					</table>
 				</td>
 			</tr>
