@@ -15,6 +15,9 @@ var transactionSchema = new mongoose.Schema(
         date: {
             type: Date,
         },
+        description: {
+            type: String,
+        },
     },
     { timestamps: true }
 );
