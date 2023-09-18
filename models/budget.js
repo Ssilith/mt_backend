@@ -7,16 +7,15 @@ var budgetSchema = new mongoose.Schema(
             trim: true,
             required: true,
         },
-        category: {
-            type: String,
-            trim: true,
-        },
         startDate: {
             type: Date,
         },
         endDate: {
             type: Date,
         },
+        income: {
+            type: Boolean,
+        }
     },
     { timestamps: true }
 );
