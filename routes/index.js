@@ -68,9 +68,11 @@ router.post("/transaction/addNewTransaction", verify, transaction.addNewTransact
 
 router.post("/transaction/updateTransaction", verify, transaction.updateTransaction);
 
-router.post("/transaction/getLastTenTransactions", verify, transaction.getAllTransactionsForUser);
+router.get("/transaction/getLastTenTransactions", verify, transaction.getAllTransactionsForUser);
 
 router.get("/transaction/:userId/getLastTenTransactionsForUser", verify, transaction.getLastTenTransactionsForUser);
+
+router.get("/transaction/:userId/getLastWeekTopCategories", verify, transaction.getLastWeekTopCategories);
 
 //##########################		CATEGORY		##########################
 router.post("/category/addCategory", verify, category.addCategory);

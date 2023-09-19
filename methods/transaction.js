@@ -97,15 +97,89 @@ var functions = {
                     $unwind: "$category"
                 }
             ]);
-            console.log(transactions);
+            // console.log(transactions);
             return res.status(200).send({ success: true, transaction: transactions });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e.message });
         }
+    },
+
+    getLastWeekTopCategories: async function (req, res) {
+        try {
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                {
+                    $match: {
+                        type: "Wydatek",
+                        date: { $gte: oneWeekAgo },
+                        _id: { $in: user.transactionId },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$category",
+                        totalAmount: { $sum: "$amount" },
+                    },
+                },
+                {
+                    $sort: { totalAmount: -1 },
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "categoryInfo"
+                    }
+                },
+                {
+                    $unwind: "$categoryInfo"
+                }
+            ]);
+
+            let totalExpense = aggregatedTransactions.reduce((acc, cur) => acc + cur.totalAmount, 0);
+
+            let results = [];
+            let remainingPercent = 100;
+
+            for (let i = 0; i < aggregatedTransactions.length; i++) {
+                let categoryExpense = aggregatedTransactions[i];
+
+                if (i < 4) {
+                    let percentage = (categoryExpense.totalAmount / totalExpense) * 100;
+                    results.push({
+                        category: categoryExpense.categoryInfo.name,
+                        color: categoryExpense.categoryInfo.color,
+                        percentage: percentage.toFixed(2),
+                        expense: categoryExpense.totalAmount,
+                    });
+                    remainingPercent -= percentage;
+                }
+            }
+
+            if (aggregatedTransactions.length > 4) {
+                results.push({
+                    category: "Inne",
+                    percentage: remainingPercent.toFixed(2),
+                });
+            }
+
+            return res.status(200).send({ success: true, categories: results, totalExpense });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e.toString() });
+        }
     }
-
-
 };
 
 module.exports.functions = functions;
