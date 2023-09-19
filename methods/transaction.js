@@ -151,6 +151,7 @@ var functions = {
 
             let results = [];
             let remainingPercent = 100;
+            let remainigExpense = totalExpense;
 
             for (let i = 0; i < aggregatedTransactions.length; i++) {
                 let categoryExpense = aggregatedTransactions[i];
@@ -161,16 +162,19 @@ var functions = {
                         category: categoryExpense.categoryInfo.name,
                         color: categoryExpense.categoryInfo.color,
                         percentage: percentage.toFixed(2),
-                        expense: categoryExpense.totalAmount,
+                        expense: categoryExpense.totalAmount.toFixed(2),
                     });
                     remainingPercent -= percentage;
+                    remainigExpense -= categoryExpense.totalAmount;
                 }
             }
 
             if (aggregatedTransactions.length > 4) {
                 results.push({
                     category: "Inne",
+                    color: "0xFF000000",
                     percentage: remainingPercent.toFixed(2),
+                    expense: remainigExpense.toFixed(2),
                 });
             }
 
