@@ -1,4 +1,5 @@
 const Category = require("../models/category");
+const User = require("../models/user");
 const mongoose = require("mongoose");
 
 var functions = {
@@ -47,7 +48,15 @@ var functions = {
 
     getCategories: async function (req, res) {
         try {
-            let category = await Category.find();
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let category = await Category.find({ _id: { $in: user.categoryId }, });
             return res.status(200).send({ success: true, category: category });
         } catch (e) {
             return res.status(500).send({ success: false });
@@ -56,7 +65,15 @@ var functions = {
 
     getCategoriesNames: async function (req, res) {
         try {
-            let category = await Category.distinct("name");
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let category = await Category.distinct("name", { _id: { $in: user.categoryId } });
             return res.status(200).send({ success: true, category: category });
         } catch (e) {
             return res.status(500).send({ success: false });

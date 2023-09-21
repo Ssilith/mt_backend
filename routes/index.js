@@ -59,16 +59,18 @@ router.post("/resetPassword", user.resetPassword);
 router.post("/getUserId", user.getUserId);
 
 // ################################# BUDGET #################################
-router.post("/budget/addNewBudget", verify, budget.addNewBudget);
+router.post("/budget/:userId/addNewBudget", verify, budget.addNewBudget);
 
 router.post("/budget/updateBudget", verify, budget.updateBudget);
+
+router.get("/budget/:userId/getCurrentBudget", verify, budget.getCurrentBudget);
 
 // ############################### TRANSACTION ##############################
 router.post("/transaction/addNewTransaction", verify, transaction.addNewTransaction);
 
 router.post("/transaction/updateTransaction", verify, transaction.updateTransaction);
 
-router.get("/transaction/getLastTenTransactions", verify, transaction.getAllTransactionsForUser);
+router.get("/transaction/:userId/getAllTransactionsForUser", verify, transaction.getAllTransactionsForUser);
 
 router.get("/transaction/:userId/getLastTenTransactionsForUser", verify, transaction.getLastTenTransactionsForUser);
 
@@ -79,9 +81,9 @@ router.post("/category/addCategory", verify, category.addCategory);
 
 router.post("/category/updateCategory", verify, category.updateCategory);
 
-router.post("/category/getCategories", verify, category.getCategories);
+router.post("/category/:userId/getCategories", verify, category.getCategories);
 
-router.post("/category/getCategoriesNames", verify, category.getCategoriesNames);
+router.post("/category/:userId/getCategoriesNames", verify, category.getCategoriesNames);
 
 router.post("/category/getCategoryIdByName", verify, category.getCategoryIdByName);
 module.exports = router;

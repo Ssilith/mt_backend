@@ -1,12 +1,22 @@
 const Budget = require("../models/budget");
 const User = require("../models/user");
+const Transaction = require("../models/transaction");
 
 var functions = {
     addNewBudget: async function (req, res) {
         try {
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
             let { startDate, endDate } = req.body.budget;
 
             let overlappingBudgets = await Budget.find({
+                _id: { $in: user.budgetId },
                 $or: [
                     { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
                     { startDate: { $lte: endDate }, endDate: { $gte: endDate } },
@@ -51,6 +61,52 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
+
+    getCurrentBudget: async function (req, res) {
+        try {
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let currentBudget = await Budget.findOne({
+                _id: { $in: user.budgetId },
+                startDate: { $lte: today },
+                endDate: { $gte: today }
+            });
+
+            if (!currentBudget) {
+                return res.status(500).send({ success: false, msg: 'notFound' });
+            }
+
+            let transactions = await Transaction.find({
+                _id: { $in: user.transactionId },
+                date: { $gte: currentBudget.startDate, $lte: currentBudget.endDate }
+            });
+
+            let transactionAmountSum = transactions.reduce((sum, transaction) => {
+                if (currentBudget.income) {
+                    return sum + transaction.amount;
+                } else if (transaction.type === 'Wydatek') {
+                    return sum + transaction.amount;
+                }
+                return sum;
+            }, 0);
+
+            let remainingAmount = currentBudget.amount - transactionAmountSum;
+            return res.status(200).send({ success: true, budget: currentBudget, leftAmount: remainingAmount, spentAmount: transactionAmountSum });
+
+        } catch (e) {
+            return res.status(500).send({ success: false, msg: e });
+        }
+    }
+
 };
 
 module.exports.functions = functions;
