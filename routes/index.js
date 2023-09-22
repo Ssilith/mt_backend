@@ -86,4 +86,5 @@ router.post("/category/:userId/getCategories", verify, category.getCategories);
 router.post("/category/:userId/getCategoriesNames", verify, category.getCategoriesNames);
 
 router.post("/category/getCategoryIdByName", verify, category.getCategoryIdByName);
+
 module.exports = router;
