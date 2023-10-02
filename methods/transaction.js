@@ -188,7 +188,6 @@ var functions = {
     getBiggestTransactionAmount: async function (req, res) {
         try {
             let userId = req.params.userId;
-
             let user = await User.findById(userId);
 
             if (!user) {
@@ -203,6 +202,83 @@ var functions = {
 
             let biggestTransaction = aggregatedTransactions[0];
             return res.status(200).send({ success: true, transaction: biggestTransaction });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e });
+        }
+    },
+
+    getMonthlySummary: async function (req, res) {
+        try {
+            let userId = req.params.userId;
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let currentDate = new Date();
+            let startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            let endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                { $match: { _id: { $in: user.transactionId } } },
+                { $match: { date: { $gte: startOfMonth, $lte: endOfMonth } } },
+                {
+                    $group: {
+                        _id: "$type",
+                        totalAmount: { $sum: "$amount" }
+                    }
+                }
+            ]);
+
+            let summary = {
+                costs: aggregatedTransactions.find(t => t._id === "Wydatek")?.totalAmount || 0,
+                income: aggregatedTransactions.find(t => t._id === "Przychód")?.totalAmount || 0
+            }
+
+            return res.status(200).send({ success: true, summary });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e });
+        }
+    },
+
+
+
+    getYearlySummary: async function (req, res) {
+        try {
+            let monthNamesPL = [
+                "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+            ];
+
+            let userId = req.params.userId;
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let currentYear = new Date().getFullYear();
+            let startOfYear = new Date(currentYear, 0, 1);
+            let endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                { $match: { _id: { $in: user.transactionId } } },
+                { $match: { date: { $gte: startOfYear, $lte: endOfYear } } },
+                { $group: { _id: { month: { $month: "$date" }, type: "$type" }, totalAmount: { $sum: "$amount" } } },
+            ]);
+
+            let summary = monthNamesPL.map((month, index) => {
+                return {
+                    month,
+                    costs: aggregatedTransactions.find(t => t._id.month === index + 1 && t._id.type === "Wydatek")?.totalAmount || 0,
+                    income: aggregatedTransactions.find(t => t._id.month === index + 1 && t._id.type === "Przychód")?.totalAmount || 0
+                }
+            });
+
+            return res.status(200).send({ success: true, summary });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e });
