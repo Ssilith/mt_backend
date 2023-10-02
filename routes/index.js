@@ -76,6 +76,8 @@ router.get("/transaction/:userId/getLastTenTransactionsForUser", verify, transac
 
 router.get("/transaction/:userId/getLastWeekTopCategories", verify, transaction.getLastWeekTopCategories);
 
+router.get("/transaction/:userId/getBiggestTransactionAmount", verify, transaction.getBiggestTransactionAmount);
+
 //##########################		CATEGORY		##########################
 router.post("/category/addCategory", verify, category.addCategory);
 

@@ -183,7 +183,31 @@ var functions = {
             console.log(e);
             return res.status(500).send({ success: false, msg: e.toString() });
         }
-    }
+    },
+
+    getBiggestTransactionAmount: async function (req, res) {
+        try {
+            let userId = req.params.userId;
+
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                { $match: { _id: { $in: user.transactionId } } },
+                { $sort: { amount: -1 } },
+                { $limit: 1 }
+            ]);
+
+            let biggestTransaction = aggregatedTransactions[0];
+            return res.status(200).send({ success: true, transaction: biggestTransaction });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e });
+        }
+    },
 };
 
 module.exports.functions = functions;
