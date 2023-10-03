@@ -244,8 +244,6 @@ var functions = {
         }
     },
 
-
-
     getYearlySummary: async function (req, res) {
         try {
             let monthNamesPL = [
@@ -277,6 +275,59 @@ var functions = {
                     income: aggregatedTransactions.find(t => t._id.month === index + 1 && t._id.type === "Przychód")?.totalAmount || 0
                 }
             });
+
+            return res.status(200).send({ success: true, summary });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e });
+        }
+    },
+
+    getMonthlySummaryCostAndIncome: async function (req, res) {
+        try {
+            let currentYear = new Date().getFullYear();
+            let currentMonth = new Date().getMonth() + 1;
+            let startOfYear = new Date(currentYear, 0, 1);
+            let endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
+
+            let userId = req.params.userId;
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                { $match: { _id: { $in: user.transactionId } } },
+                { $match: { date: { $gte: startOfYear, $lte: endOfYear } } },
+                {
+                    $group: {
+                        _id: { month: { $month: "$date" }, type: "$type" },
+                        totalAmount: { $sum: "$amount" },
+                        count: { $sum: 1 }
+                    }
+                }
+            ]);
+
+            let monthlyAverage = {
+                averageCost: aggregatedTransactions
+                    .filter(t => t._id.type === "Wydatek")
+                    .reduce((acc, t) => acc + t.totalAmount, 0) / 12,
+                averageIncome: aggregatedTransactions
+                    .filter(t => t._id.type === "Przychód")
+                    .reduce((acc, t) => acc + t.totalAmount, 0) / 12
+            };
+
+            let thisMonth = {
+                cost: aggregatedTransactions.find(t => t._id.month === currentMonth && t._id.type === "Wydatek")?.totalAmount || 0,
+                income: aggregatedTransactions.find(t => t._id.month === currentMonth && t._id.type === "Przychód")?.totalAmount || 0
+            };
+
+            let summary = {
+                monthlyAverage,
+                thisMonth
+            }
 
             return res.status(200).send({ success: true, summary });
         } catch (e) {

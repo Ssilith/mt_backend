@@ -59,6 +59,8 @@ router.get("/transaction/:userId/getMonthlySummary", verify, transaction.getMont
 
 router.get("/transaction/:userId/getYearlySummary", verify, transaction.getYearlySummary);
 
+router.get("/transaction/:userId/getMonthlySummaryCostAndIncome", verify, transaction.getMonthlySummaryCostAndIncome);
+
 //##########################		CATEGORY		##########################
 router.post("/category/addCategory", verify, category.addCategory);
 
