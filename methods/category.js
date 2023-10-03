@@ -9,13 +9,6 @@ var functions = {
                 $or: [{ name: req.body.category.name }],
             });
 
-            if (cat) {
-                if (cat.name == req.body.category.name)
-                    return res
-                        .status(500)
-                        .send({ success: false, key: "nameUsed" });
-            }
-
             let categoryId = new mongoose.Types.ObjectId();
             let newCategory = await Category(req.body.category);
             newCategory._id = categoryId;

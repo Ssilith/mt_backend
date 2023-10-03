@@ -91,9 +91,7 @@ var functions = {
             });
 
             let transactionAmountSum = transactions.reduce((sum, transaction) => {
-                if (currentBudget.income) {
-                    return sum + transaction.amount;
-                } else if (transaction.type === 'Wydatek') {
+                if (transaction.type === 'Wydatek') {
                     return sum + transaction.amount;
                 }
                 return sum;
