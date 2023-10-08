@@ -41,26 +41,48 @@ var functions = {
 
     updateBudget: async function (req, res) {
         try {
+            let { startDate, endDate, _id } = req.body.budget;
+
+            let budget = await Budget.findById(_id);
+            if (!budget) {
+                return res.status(500).send({ success: false, message: "budgetNotFound" });
+            }
+
+            let user = await User.findById(req.body.userId);
+            if (!user) {
+                return res.status(500).send({ success: false, message: "userNotFound" });
+            }
+
+            let overlappingBudgets = await Budget.find({
+                _id: { $in: user.budgetId, $ne: _id },
+                $or: [
+                    { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
+                    { startDate: { $lte: endDate }, endDate: { $gte: endDate } },
+                    { startDate: { $gte: startDate }, endDate: { $lte: endDate } }
+                ]
+            });
+
+            if (overlappingBudgets.length > 0) {
+                return res.status(400).send({ success: false, message: 'budgetOverlaps' });
+            }
+
             let updatedBudget = await Budget.findByIdAndUpdate(
-                req.body.budget._id,
+                _id,
                 req.body.budget,
                 { new: true }
             );
 
             if (!updatedBudget) {
-                return res
-                    .status(500)
-                    .send({ success: false, message: "notFound" });
+                return res.status(500).send({ success: false, message: "notFound" });
             }
 
-            return res
-                .status(200)
-                .send({ success: true, budget: updatedBudget });
+            return res.status(200).send({ success: true, budget: updatedBudget });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false });
         }
     },
+
 
     getCurrentBudget: async function (req, res) {
         try {
