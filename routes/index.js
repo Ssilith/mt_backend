@@ -35,6 +35,8 @@ router.post("/resetPassword", user.resetPassword);
 
 router.post("/getUserId", user.getUserId);
 
+router.delete("/:userId/deleteAccount", user.deleteAccount);
+
 // ################################# BUDGET #################################
 router.post("/budget/:userId/addNewBudget", verify, budget.addNewBudget);
 

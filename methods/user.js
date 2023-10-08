@@ -114,6 +114,16 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
+    deleteAccount: async function (req, res) {
+        try {
+            let userId = req.params.userId;
+            await User.findByIdAndDelete(userId);
+            await Token.deleteOne({ token: req.headers.refreshtoken });
+            return res.status(200).send({ success: true });
+        } catch (e) {
+            return res.status(500).send({ success: false });
+        }
+    },
     addNew: async function (req, res) {
         try {
             let user = await User.findOne({
