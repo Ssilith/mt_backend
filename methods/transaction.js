@@ -335,6 +335,90 @@ var functions = {
             return res.status(500).send({ success: false, msg: e });
         }
     },
+
+    getYearlySummaryAndTransactions: async function (req, res) {
+        try {
+            let currentYear = new Date().getFullYear();
+            let startOfYear = new Date(currentYear, 0, 1);
+            let endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
+
+            let userId = req.params.userId;
+            let user = await User.findById(userId);
+
+            if (!user) {
+                return res.status(500).send({ success: false, msg: "notFound" });
+            }
+
+            let aggregatedTransactions = await Transaction.aggregate([
+                { $match: { _id: { $in: user.transactionId } } },
+                { $match: { date: { $gte: startOfYear, $lte: endOfYear } } },
+                {
+                    $group: {
+                        _id: { month: { $month: "$date" }, categoryId: "$category", type: "$type" },
+                        totalAmount: { $sum: "$amount" }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "_id.categoryId",
+                        foreignField: "_id",
+                        as: "categoryData"
+                    }
+                },
+                {
+                    $unwind: "$categoryData"
+                }
+            ]);
+
+            let monthlyData = [];
+            let yearlyIncome = 0;
+            let yearlyCost = 0;
+
+            for (let month = 1; month <= 12; month++) {
+                let monthData = {
+                    month: month,
+                    costs: [],
+                    totalCost: 0,
+                    incomes: [],
+                    totalIncome: 0,
+                };
+
+                aggregatedTransactions.forEach(transaction => {
+                    if (transaction._id.month === month) {
+                        const categoryName = transaction.categoryData.name;
+
+                        if (transaction._id.type === "Wydatek" && transaction.totalAmount !== 0) {
+                            monthData.costs.push({ categoryName, amount: transaction.totalAmount });
+                            monthData.totalCost += transaction.totalAmount;
+                        } else if (transaction._id.type === "Przychód" && transaction.totalAmount !== 0) {
+                            monthData.incomes.push({ categoryName, amount: transaction.totalAmount });
+                            monthData.totalIncome += transaction.totalAmount;
+                        }
+                    }
+                });
+
+                yearlyCost += monthData.totalCost;
+                yearlyIncome += monthData.totalIncome;
+                monthlyData.push(monthData);
+            }
+
+            return res.status(200).send({
+                success: true,
+                monthlyData,
+                yearlySummary: {
+                    totalIncome: yearlyIncome,
+                    totalCost: yearlyCost,
+                }
+            });
+
+        } catch (e) {
+            console.log(e);
+            return res.status(500).send({ success: false, msg: e });
+        }
+    },
+
+
 };
 
 module.exports.functions = functions;
