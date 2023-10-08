@@ -386,7 +386,7 @@ var functions = {
 
                 aggregatedTransactions.forEach(transaction => {
                     if (transaction._id.month === month) {
-                        const categoryName = transaction.categoryData.name;
+                        let categoryName = transaction.categoryData.name;
 
                         if (transaction._id.type === "Wydatek" && transaction.totalAmount !== 0) {
                             monthData.costs.push({ categoryName, amount: transaction.totalAmount });
