@@ -97,10 +97,12 @@ var functions = {
             let today = new Date();
             today.setHours(0, 0, 0, 0);
 
+            let utcToday = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+
             let currentBudget = await Budget.findOne({
                 _id: { $in: user.budgetId },
-                startDate: { $lte: today },
-                endDate: { $gte: today }
+                startDate: { $lte: utcToday },
+                endDate: { $gte: utcToday }
             });
 
             if (!currentBudget) {
@@ -183,7 +185,14 @@ var functions = {
                 });
             }
 
-            return res.status(200).send({ success: true, budget: currentBudget, leftAmount: remainingAmount, spentAmount: transactionAmountSum, categories: results, totalExpense });
+            let percentage = (transactionAmountSum / currentBudget.amount) * 100;
+
+            let over90 = percentage >= currentBudget.notification.budgetValue;
+            let over100 = percentage >= currentBudget.notification.budgetOver;
+
+            return res.status(200).send({
+                success: true, budget: currentBudget, leftAmount: remainingAmount, spentAmount: transactionAmountSum, categories: results, totalExpense, over90, over100
+            });
 
         } catch (e) {
             return res.status(500).send({ success: false, msg: e });

@@ -6,6 +6,7 @@ const general = require("../methods/general");
 const budget = require("../methods/budget").functions;
 const transaction = require("../methods/transaction").functions;
 const category = require("../methods/category").functions;
+const notification = require("../methods/notification").functions;
 
 //##########################		GENERAL		##########################
 router.post("/cleardb", general.cleardb);
@@ -75,5 +76,14 @@ router.post("/category/:userId/getCategories", verify, category.getCategories);
 router.post("/category/:userId/getCategoriesNames", verify, category.getCategoriesNames);
 
 router.post("/category/getCategoryIdByName", verify, category.getCategoryIdByName);
+
+//##########################	NOTIFICATION    	##########################
+router.post("/notification/addNewNotification", notification.addNewNotification);
+
+router.post("/notification/updateNotification", verify, notification.updateNotification);
+
+router.post("/notification/:userId/getNotifications", verify, notification.getNotifications);
+
+
 
 module.exports = router;

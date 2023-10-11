@@ -1,5 +1,25 @@
 const mongoose = require("mongoose");
 
+const notificationSchema = new mongoose.Schema(
+    {
+        budgetValue: {
+            type: Number,
+            required: true,
+        },
+        sentBudgetValue: {
+            type: Boolean,
+            default: false,
+        },
+        budgetOver: {
+            type: Number,
+            required: true,
+        },
+        sentBudgetOver: {
+            type: Boolean,
+            default: false,
+        },
+    }, { timestamps: true });
+
 var budgetSchema = new mongoose.Schema(
     {
         amount: {
@@ -13,6 +33,7 @@ var budgetSchema = new mongoose.Schema(
         endDate: {
             type: Date,
         },
+        notification: { type: notificationSchema },
     },
     { timestamps: true }
 );

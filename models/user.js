@@ -36,6 +36,9 @@ var userSchema = new mongoose.Schema(
         onboard: {
             type: Boolean,
         },
+        notifications: {
+            type: Boolean,
+        },
         transactionId: [{ type: mongoose.Schema.Types.ObjectId }],
         budgetId: [{ type: mongoose.Schema.Types.ObjectId }],
         notificationId: [{ type: mongoose.Schema.Types.ObjectId }],
