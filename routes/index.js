@@ -24,8 +24,6 @@ router.delete("/logout", user.logout);
 
 router.get("/getUserInfo", verify, user.getUserInfo);
 
-router.get("/getUsersForAdmin", verify, user.getUsersForAdmin);
-
 router.post("/updateUserInfo", verify, user.updateUserInfo);
 
 router.post("/sendResetPwdEmail", user.sendResetPwdEmail);

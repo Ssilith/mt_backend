@@ -15,7 +15,6 @@ var functions = {
                     .status(500)
                     .send({ success: false, key: "loginFailed" });
 
-            //provvisory code to migrate user passwords -- remove once all users are migrated
             if (!user.password) {
                 user.password = req.body.password;
                 user = await user.save();
@@ -42,6 +41,7 @@ var functions = {
             return res.status(500).send({ success: false, key: "loginFailed" });
         }
     },
+
     confirmIdentity: async function (req, res) {
         try {
             var user = await User.findOne({ email: req.body.email });
@@ -78,12 +78,12 @@ var functions = {
                 .send({ success: false, key: "verificationFailed" });
         }
     },
+
     refreshToken: async function (req, res) {
         try {
             if (!req.headers.refreshtoken)
                 return res.status(403).send({ success: false });
 
-            //Verify that token actually exists in the database
             const token = await Token.findOne({
                 token: req.headers.refreshtoken,
             });
@@ -106,6 +106,7 @@ var functions = {
             return res.status(403).send({ success: false });
         }
     },
+
     logout: async function (req, res) {
         try {
             await Token.deleteOne({ token: req.headers.refreshtoken });
@@ -114,6 +115,7 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
+
     deleteAccount: async function (req, res) {
         try {
             let userId = req.params.userId;
@@ -124,6 +126,7 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
+
     addNew: async function (req, res) {
         try {
             let user = await User.findOne({
@@ -147,6 +150,7 @@ var functions = {
             return res.status(500).send({ success: false, msg: e });
         }
     },
+
     getUserInfo: async function (req, res) {
         try {
             return res.status(200).send({ success: true, user: req.body.user });
@@ -154,18 +158,7 @@ var functions = {
             return res.status(500).send({ success: false });
         }
     },
-    getUsersForAdmin: async function (req, res) {
-        try {
-            //remove admin user from users list
-            let users = await User.find({}).sort(sortUsers);
-            let adminIndex = users.findIndex((e) => e._id == req.body.user._id);
-            if (adminIndex != -1) users.splice(adminIndex, 1);
 
-            return res.status(200).send({ success: true, users: users });
-        } catch (e) {
-            return res.status(500).send({ success: false });
-        }
-    },
     updateUserInfo: async function (req, res) {
         try {
             let savedUser = await User.findOneAndUpdate(
@@ -209,6 +202,7 @@ var functions = {
                 "https://drive.google.com/uc?export=download&id=1AYmKaBS_lio75tqpeX0sRTuEkdSel59D",
         });
     },
+
     resetPassword: async function (req, res) {
         try {
             var user = await User.findOne({ email: req.body.email });
@@ -229,16 +223,7 @@ var functions = {
             });
         }
     },
-    getAllUsernames: async function (req, res) {
-        try {
-            let usernameAll = await User.distinct("username");
-            return res
-                .status(200)
-                .send({ success: true, usernameAll: usernameAll });
-        } catch (e) {
-            return res.status(500).send({ success: false });
-        }
-    },
+
     getUserId: async function (req, res) {
         try {
             var user = await User.findOne({ username: req.body.username });
@@ -248,6 +233,7 @@ var functions = {
         }
     },
 };
+
 var private = {
     generateTokens: async function (user) {
         let refreshToken = jwt.sign(
@@ -271,6 +257,7 @@ var private = {
             access: accessToken,
         };
     },
+
     sendResetPasswordEmail: async function (req, res, user) {
         try {
             var protocol = req.secure ? "https" : "http";
