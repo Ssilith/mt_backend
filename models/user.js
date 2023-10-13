@@ -29,10 +29,6 @@ var userSchema = new mongoose.Schema(
             type: Boolean,
             trim: true,
         },
-        account: {
-            type: Number,
-            trim: true,
-        },
         onboard: {
             type: Boolean,
         },
