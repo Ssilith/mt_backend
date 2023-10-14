@@ -23,16 +23,17 @@ var functions = {
 
     updateCategory: async function (req, res) {
         try {
-            await Category.findByIdAndUpdate(
+            let cat = await Category.findByIdAndUpdate(
                 req.body.id,
                 req.body.category,
                 {
                     new: true,
                 }
             );
+
             return res
                 .status(200)
-                .send({ success: true, category: req.body.category });
+                .send({ success: true, category: cat });
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e });
