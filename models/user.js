@@ -39,6 +39,7 @@ var userSchema = new mongoose.Schema(
         budgetId: [{ type: mongoose.Schema.Types.ObjectId }],
         notificationId: [{ type: mongoose.Schema.Types.ObjectId }],
         categoryId: [{ type: mongoose.Schema.Types.ObjectId }],
+        typeId: [{ type: mongoose.Schema.Types.ObjectId }],
         token: {
             type: String,
         },

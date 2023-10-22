@@ -160,12 +160,14 @@ var functions = {
     },
 
     updateUserInfo: async function (req, res) {
+        console.log(req.body.updatedUser);
         try {
             let savedUser = await User.findOneAndUpdate(
                 { _id: req.body.updatedUser._id },
                 req.body.updatedUser,
                 { new: true }
             );
+            console.log(savedUser);
             return res.status(200).send({ success: true });
         } catch (e) {
             return res.status(500).send({ success: false });

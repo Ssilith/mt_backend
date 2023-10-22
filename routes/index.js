@@ -7,6 +7,7 @@ const budget = require("../methods/budget").functions;
 const transaction = require("../methods/transaction").functions;
 const category = require("../methods/category").functions;
 const notification = require("../methods/notification").functions;
+const type = require("../methods/type").functions;
 
 //##########################		GENERAL		##########################
 router.post("/cleardb", general.cleardb);
@@ -82,6 +83,13 @@ router.post("/notification/updateNotification", verify, notification.updateNotif
 
 router.post("/notification/:userId/getNotifications", verify, notification.getNotifications);
 
+//##########################	    TYPE    	##########################
+router.post("/type/addNewType", verify, type.addNewType);
 
+router.post("/type/:userId/getTypes", verify, type.getTypes);
+
+router.post("/type/:userId/getTypesNames", verify, type.getTypesNames);
+
+router.post("/type/getTypeIdByName", verify, type.getTypeIdByName);
 
 module.exports = router;
