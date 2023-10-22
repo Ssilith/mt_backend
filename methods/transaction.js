@@ -1,6 +1,7 @@
 const Transaction = require("../models/transaction");
 const User = require("../models/user");
 const Category = require("../models/category");
+const Type = require("../models/type");
 const mongoose = require("mongoose");
 
 var functions = {
@@ -64,6 +65,13 @@ var functions = {
                 }
             ]);
 
+            for (let transaction of transactions) {
+                if (mongoose.Types.ObjectId.isValid(transaction.type)) {
+                    let type = await Type.findById(transaction.type);
+                    transaction.transactionType = type;
+                }
+            }
+
             return res.status(200).send({ success: true, transactions: transactions });
         } catch (e) {
             console.log(e);
@@ -97,7 +105,14 @@ var functions = {
                     $unwind: "$category"
                 }
             ]);
-            // console.log(transactions);
+
+            for (let transaction of transactions) {
+                if (mongoose.Types.ObjectId.isValid(transaction.type)) {
+                    let type = await Type.findById(transaction.type);
+                    transaction.transactionType = type;
+                }
+            }
+
             return res.status(200).send({ success: true, transaction: transactions });
         } catch (e) {
             console.log(e);
@@ -349,6 +364,8 @@ var functions = {
                 return res.status(500).send({ success: false, msg: "notFound" });
             }
 
+            let allTypes = await Type.find({});
+
             let aggregatedTransactions = await Transaction.aggregate([
                 { $match: { _id: { $in: user.transactionId } } },
                 { $match: { date: { $gte: startOfYear, $lte: endOfYear } } },
@@ -382,42 +399,58 @@ var functions = {
                     totalCost: 0,
                     incomes: [],
                     totalIncome: 0,
+                    otherTypes: {}
                 };
+
+                // Initialize all types for the month with placeholders
+                allTypes.forEach(typeObj => {
+                    monthData.otherTypes[typeObj.name] = { total: 0, breakdown: [] };
+                });
 
                 aggregatedTransactions.forEach(transaction => {
                     if (transaction._id.month === month) {
                         let categoryName = transaction.categoryData.name;
+                        let typeName = transaction._id.type;
 
-                        if (transaction._id.type === "Wydatek" && transaction.totalAmount !== 0) {
+                        if (mongoose.Types.ObjectId.isValid(typeName)) {
+                            let typeObj = allTypes.find(t => t._id.toString() === typeName);
+                            typeName = typeObj ? typeObj.name : "Nieznane";
+                        }
+
+                        if (typeName === "Wydatek" && transaction.totalAmount !== 0) {
                             monthData.costs.push({ categoryName, amount: transaction.totalAmount });
                             monthData.totalCost += transaction.totalAmount;
-                        } else if (transaction._id.type === "Przychód" && transaction.totalAmount !== 0) {
+                        } else if (typeName === "Przychód" && transaction.totalAmount !== 0) {
                             monthData.incomes.push({ categoryName, amount: transaction.totalAmount });
                             monthData.totalIncome += transaction.totalAmount;
+                        } else if (monthData.otherTypes[typeName]) { // Handle other types
+                            monthData.otherTypes[typeName].total += transaction.totalAmount;
+                            monthData.otherTypes[typeName].breakdown.push({ categoryName, amount: transaction.totalAmount });
                         }
                     }
                 });
 
-                yearlyCost += monthData.totalCost;
-                yearlyIncome += monthData.totalIncome;
                 monthlyData.push(monthData);
+                yearlyIncome += monthData.totalIncome;
+                yearlyCost += monthData.totalCost;
             }
 
-            return res.status(200).send({
+            let responseData = {
                 success: true,
                 monthlyData,
                 yearlySummary: {
                     totalIncome: yearlyIncome,
-                    totalCost: yearlyCost,
+                    totalCost: yearlyCost
                 }
-            });
+            };
+
+            return res.status(200).send(responseData);
 
         } catch (e) {
             console.log(e);
             return res.status(500).send({ success: false, msg: e });
         }
     },
-
 
 };
 

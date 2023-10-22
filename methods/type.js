@@ -26,7 +26,6 @@ var functions = {
             }
 
             let type = await Type.find({ _id: { $in: user.typeId }, });
-            // let typeNames = type.distinct("name");
 
             return res.status(200).send({ success: true, type: type });
         } catch (e) {
