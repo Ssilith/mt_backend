@@ -402,7 +402,6 @@ var functions = {
                     otherTypes: {}
                 };
 
-                // Initialize all types for the month with placeholders
                 allTypes.forEach(typeObj => {
                     monthData.otherTypes[typeObj.name] = { total: 0, breakdown: [] };
                 });
