@@ -16,14 +16,8 @@ async function connectDB1() {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
-      // conn = await mongoose.connect(process.env.DB_HOST, {
-      //   //tlsCAFile: __dirname + "/ca-certificate.crt",
-      //   useNewUrlParser: true,
-      //   useUnifiedTopology: true,
-      // });
     } else {
-      conn = await mongoose.connect(process.env.DB_HOST, {
-        //tlsCAFile: __dirname + "/ca-certificate.crt",
+      conn = await mongoose.connect(process.env.DB_LOCAL_HOST, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
