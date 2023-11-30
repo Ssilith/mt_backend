@@ -12,7 +12,6 @@ async function connectDB1() {
   try {
     var conn;
     if (process.env.NODE_ENV === "development") {
-      DB_HOST
       conn = await mongoose.connect(process.env.DB_HOST, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
