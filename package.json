@@ -9,9 +9,6 @@
     "start": "cross-env NODE_ENV=production node server",
     "dev": "cross-env NODE_ENV=development nodemon server"
   },
-  "engines": {
-    "node": "18.x"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ssilith/mt_backend.git"
