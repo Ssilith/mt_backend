@@ -12,12 +12,12 @@ async function connectDB1() {
   try {
     var conn;
     if (process.env.NODE_ENV === "development") {
-      conn = await mongoose.connect(process.env.DB_HOST, {
+      conn = await mongoose.connect(process.env.DB_LOCAL_HOST, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
     } else {
-      conn = await mongoose.connect(process.env.DB_HOST, {
+      conn = await mongoose.connect(process.env.DB_LOCAL_HOST, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
