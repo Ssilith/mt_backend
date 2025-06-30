@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const { connectDBs } = require("./config/db");
 const routes = require("./routes/index");
-const cron = require("node-cron");
 
 main();
 
@@ -29,11 +28,6 @@ async function main() {
   app.set("view engine", "ejs");
 
   app.use("/images", express.static(__dirname + "/images"));
-
-  //Runs callback at 2 AM on the first day of the month every other month
-  cron.schedule("0 2 1 */2 *", async () => {
-    await deleteUnusedFcmTokens();
-  });
 
   const PORT = 8080;
   app.listen(
