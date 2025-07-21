@@ -18,7 +18,7 @@ Developed with:
   <li><code>Node.js</code>, <code>Express</code> for building the RESTful API</li>
   <li><code>MongoDB</code>, <code>Mongoose</code> for data modeling and database access</li>
   <li><code>jsonwebtoken</code>, <code>bcrypt</code> for authentication and password hashing</li>
-  <li><code>nodemailer</code> for sending emails (e.g., verification, reports)</li>
+  <li><code>nodemailer</code> for sending emails related to user registration and password reset</li>
   <li><code>dotenv</code> for environment configuration</li>
 </ul>
 </p>
