@@ -19,6 +19,6 @@ Developed with:
   <li><code>MongoDB</code>, <code>Mongoose</code> for data modeling and database access</li>
   <li><code>jsonwebtoken</code>, <code>bcrypt</code> for authentication and password hashing</li>
   <li><code>nodemailer</code> for sending emails (e.g., verification, reports)</li>
-  <li><code>dotenv</code>mfor environment configuration</li>
+  <li><code>dotenv</code> for environment configuration</li>
 </ul>
 </p>
